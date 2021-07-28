@@ -35,4 +35,3 @@ class Read:
             with open(PathHolder.path, 'w') as fileObject:
                 json.dump([], fileObject)
             return Read.readFile()
-
