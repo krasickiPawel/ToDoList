@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import json
 
 
 class PathHolder:
@@ -11,7 +12,7 @@ class PathHolder:
         dirPath = os.path.join(home, 'Documents', 'ToDoList')
         if not os.path.exists(dirPath):
             os.mkdir(dirPath)
-        filePath = os.path.join(dirPath, 'zadania.txt')
+        filePath = os.path.join(dirPath, 'tasks.json')
         cls.path = filePath
 
 
@@ -20,7 +21,7 @@ class Save:
     def saveFile(taskList):
         fileList = [task.get() for task in taskList]
         with open(PathHolder.path, 'w') as fileObject:
-            fileObject.write('\n'.join(fileList))
+            json.dump(fileList, fileObject, indent=1)
 
 
 class Read:
@@ -28,12 +29,10 @@ class Read:
     def readFile():
         try:
             with open(PathHolder.path, 'r') as fileObject:
-                fileList = fileObject.readlines()
-            fileList = [task for task in fileList if not task.__eq__('\n')]
-            fileList = [task.removesuffix('\n') for task in fileList]
+                fileList = json.load(fileObject)
             return fileList
         except FileNotFoundError:
             with open(PathHolder.path, 'w') as fileObject:
-                fileObject.close()
+                json.dump([], fileObject)
             return Read.readFile()
 
